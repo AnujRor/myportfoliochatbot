@@ -22,9 +22,9 @@ const FIRST_MESSAGE =
   'Namaste! 👋 Main Anuj ka AI assistant hoon. Aap mujhse Anuj ke baare mein kuch bhi pooch sakte ho: unki story, projects, skills ya contact.';
 const SUGGESTIONS = [
   'Anuj kaun hai?',
-  'Projects dikhao',
-  'AI Dost kya hai?',
-  'Contact kaise karein?',
+  'Saare projects dikhao',
+  'AI Dost ke baare mein batao',
+  'Skills aur contact links?',
 ];
 
 function createMessage(role: Role, content: string): Message {

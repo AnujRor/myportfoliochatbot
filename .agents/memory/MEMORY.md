@@ -1,1 +1,2 @@
 - [Groq model access](groq-model-fallback.md) — request the preferred model first and fall back only on a provider model-not-found response.
+- [Portfolio knowledge source](portfolio-source-of-truth.md) — answer Anuj questions only from the verified portfolio pages and never invent missing facts or links.
