@@ -1,0 +1,1 @@
+- [Groq model access](groq-model-fallback.md) — request the preferred model first and fall back only on a provider model-not-found response.

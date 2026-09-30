@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Anuj's AI Assistant"
+description = "A single-screen AI chat assistant that helps visitors learn about Anuj Ror, his story, projects, skills, writing, and contact details."
+version = "1.0.0"
+id = "artifacts/anuj-ai-assistant"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24266
+
+[services.development]
+run = "pnpm --filter @workspace/anuj-ai-assistant run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/anuj-ai-assistant", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/anuj-ai-assistant/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24266"
+BASE_PATH = "/"
