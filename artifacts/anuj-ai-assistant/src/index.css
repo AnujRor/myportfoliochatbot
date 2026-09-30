@@ -33,11 +33,11 @@
   --foreground: 221 35% 16%;
   --border: 39 24% 87%;
   --input: 39 24% 87%;
-  --ring: 213 73% 48%;
+  --ring: 174 75% 35%;
   --card: 42 52% 98%;
   --card-foreground: 221 35% 16%;
   --card-border: 39 24% 87%;
-  --primary: 213 73% 48%;
+  --primary: 174 75% 35%;
   --primary-foreground: 0 0% 100%;
   --secondary: 38 40% 92%;
   --secondary-foreground: 221 35% 16%;
@@ -66,10 +66,10 @@
   --foreground: 42 45% 96%;
   --border: 220 18% 25%;
   --input: 220 18% 25%;
-  --ring: 213 73% 60%;
+  --ring: 174 75% 42%;
   --card: 221 26% 17%;
   --card-foreground: 42 45% 96%;
-  --primary: 213 73% 60%;
+  --primary: 174 75% 42%;
   --primary-foreground: 221 35% 16%;
   --secondary: 221 21% 22%;
   --secondary-foreground: 42 45% 96%;
@@ -116,7 +116,7 @@
   overflow: hidden;
   background:
     radial-gradient(circle at 92% 4%, rgba(230, 167, 74, .16), transparent 30%),
-    radial-gradient(circle at 5% 86%, rgba(52, 105, 174, .09), transparent 28%),
+    radial-gradient(circle at 5% 86%, rgba(27, 154, 142, .11), transparent 28%),
     #fdfaf5;
 }
 .chat-shell::before {
@@ -166,7 +166,7 @@
 @media (min-width: 768px) {
   body {
     background:
-      radial-gradient(circle at 50% 0%, rgba(231, 190, 119, .16), transparent 34%),
+      radial-gradient(circle at 50% 0%, rgba(103, 194, 177, .18), transparent 34%),
       #ded9ce;
   }
   .chat-shell {

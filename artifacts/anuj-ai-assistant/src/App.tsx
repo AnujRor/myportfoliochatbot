@@ -94,10 +94,10 @@ function ChatMessage({ message }: { message: Message }) {
     <div className={`chat-message-in flex w-full gap-2.5 ${assistant ? 'items-end' : 'items-start justify-end'}`} data-testid={`message-${message.id}`}>
       {assistant && <AssistantMark small />}
       <div
-        className={`max-w-[82%] px-4 py-3 text-[14px] leading-[1.55] shadow-[0_2px_8px_rgba(59,56,48,.04)] ${
+        className={`max-w-[82%] px-4 py-3 text-[14px] leading-[1.55] shadow-[0_2px_8px_rgba(38,74,70,.07)] ${
           assistant
-             ? 'rounded-[17px_17px_17px_5px] border border-[#eee7db] bg-[linear-gradient(145deg,#fffdf9,#f8f3eb)] text-[#293448]'
-             : 'rounded-[17px_17px_5px_17px] bg-[linear-gradient(145deg,#244b88,#1e3a8a)] text-[#fffdf8] shadow-[0_5px_13px_rgba(30,58,138,.16)]'
+             ? 'rounded-[17px_17px_17px_5px] border border-[#d5ebe5] bg-[linear-gradient(145deg,#f7fffd,#edf9f5)] text-[#204541]'
+             : 'rounded-[17px_17px_5px_17px] bg-[linear-gradient(145deg,#159a8c,#087f78)] text-[#f5fffd] shadow-[0_5px_13px_rgba(8,127,120,.2)]'
         }`}
       >
         {assistant ? <InlineMarkdown content={message.content} /> : <p className="m-0 whitespace-pre-wrap">{message.content}</p>}
@@ -226,7 +226,7 @@ function Home() {
           {isLoading && (
             <div className="chat-message-in flex items-end gap-2.5" data-testid="status-typing">
               <AssistantMark small />
-              <div className="flex h-10 items-center gap-1 rounded-[17px_17px_17px_5px] bg-[#fbf9f4] px-4 shadow-[0_2px_8px_rgba(59,56,48,.04)]" aria-label="Assistant is typing">
+              <div className="flex h-10 items-center gap-1 rounded-[17px_17px_17px_5px] border border-[#d5ebe5] bg-[#f3fbf8] px-4 shadow-[0_2px_8px_rgba(38,74,70,.06)]" aria-label="Assistant is typing">
                 <span className="typing-dot h-1.5 w-1.5 rounded-full bg-[#66748a]" />
                 <span className="typing-dot h-1.5 w-1.5 rounded-full bg-[#66748a]" />
                 <span className="typing-dot h-1.5 w-1.5 rounded-full bg-[#66748a]" />
