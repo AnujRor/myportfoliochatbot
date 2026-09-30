@@ -81,7 +81,7 @@ function AssistantMark({ small = false }: { small?: boolean }) {
   return (
     <div
       aria-hidden="true"
-      className={`flex shrink-0 items-center justify-center rounded-full bg-[#213f69] text-[#f8f2e7] shadow-[0_3px_10px_rgba(33,63,105,.16)] ${small ? 'h-7 w-7' : 'h-9 w-9'}`}
+      className={`flex shrink-0 items-center justify-center rounded-full bg-[linear-gradient(145deg,#2c568e,#1e3a8a)] text-[#f8f2e7] shadow-[0_4px_13px_rgba(30,58,138,.22)] ${small ? 'h-7 w-7' : 'h-9 w-9'}`}
     >
       {small ? <Bot size={15} strokeWidth={2.2} /> : <span className="font-mono text-[11px] font-bold tracking-[-.08em]">AR</span>}
     </div>
@@ -96,8 +96,8 @@ function ChatMessage({ message }: { message: Message }) {
       <div
         className={`max-w-[82%] px-4 py-3 text-[14px] leading-[1.55] shadow-[0_2px_8px_rgba(59,56,48,.04)] ${
           assistant
-            ? 'rounded-[17px_17px_17px_5px] bg-[#fbf9f4] text-[#293448]'
-             : 'rounded-[17px_17px_5px_17px] bg-[#1e3a8a] text-[#fffdf8]'
+             ? 'rounded-[17px_17px_17px_5px] border border-[#eee7db] bg-[linear-gradient(145deg,#fffdf9,#f8f3eb)] text-[#293448]'
+             : 'rounded-[17px_17px_5px_17px] bg-[linear-gradient(145deg,#244b88,#1e3a8a)] text-[#fffdf8] shadow-[0_5px_13px_rgba(30,58,138,.16)]'
         }`}
       >
         {assistant ? <InlineMarkdown content={message.content} /> : <p className="m-0 whitespace-pre-wrap">{message.content}</p>}
@@ -183,7 +183,7 @@ function Home() {
 
   return (
     <main className="chat-shell flex min-h-[100dvh] flex-col overflow-hidden text-[#293448]">
-      <header className="header-in z-10 flex shrink-0 items-center justify-between border-b border-[#e6dfd3] bg-[#faf7f0]/95 px-5 py-4 backdrop-blur-md">
+      <header className="header-in z-10 flex shrink-0 items-center justify-between border-b border-[#e6dfd3] bg-[#faf7f0]/90 px-5 py-4 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <AssistantMark />
           <div>
@@ -198,7 +198,7 @@ function Home() {
           type="button"
           onClick={newChat}
           data-testid="button-new-chat"
-           className="inline-flex items-center gap-1.5 rounded-full border border-[#d9d3c8] px-3.5 py-2 text-[12px] font-semibold text-[#40506a] transition-colors hover:border-[#213f69] hover:bg-[#f0ece4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4c84bd] focus-visible:ring-offset-2 focus-visible:ring-offset-[#faf7f0]"
+           className="inline-flex items-center gap-1.5 rounded-full border border-[#d9d3c8] bg-[#fffdf9]/70 px-3.5 py-2 text-[12px] font-semibold text-[#40506a] transition-all hover:-translate-y-0.5 hover:border-[#213f69] hover:bg-[#f0ece4] hover:shadow-[0_4px_12px_rgba(54,67,86,.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4c84bd] focus-visible:ring-offset-2 focus-visible:ring-offset-[#faf7f0]"
         >
            <RotateCcw size={13} aria-hidden="true" />
            <span>New</span>
@@ -216,7 +216,7 @@ function Home() {
                   type="button"
                   onClick={() => void sendMessage(suggestion)}
                   data-testid={`button-suggestion-${suggestion.toLowerCase().replaceAll(' ', '-')}`}
-                  className="rounded-full border border-[#d9d9d2] bg-[#fbf9f4] px-3.5 py-2 text-left text-[12px] font-medium text-[#42516a] transition-all hover:-translate-y-0.5 hover:border-[#9fb5cf] hover:bg-[#f0f4f8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4c84bd]"
+                   className="rounded-full border border-[#dfd7ca] bg-[#fffdf9]/80 px-3.5 py-2 text-left text-[12px] font-medium text-[#42516a] shadow-[0_2px_6px_rgba(63,57,46,.035)] transition-all hover:-translate-y-0.5 hover:border-[#c59a56] hover:bg-[#fff6e7] hover:shadow-[0_5px_12px_rgba(197,154,86,.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4c84bd]"
                 >
                   {suggestion}
                 </button>
@@ -262,7 +262,7 @@ function Home() {
             disabled={!draft.trim() || isLoading}
             aria-label="Send message"
             data-testid="button-send"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#2f70b7] text-white transition-all hover:bg-[#245d99] hover:shadow-[0_4px_10px_rgba(47,112,183,.25)] disabled:cursor-not-allowed disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4c84bd] focus-visible:ring-offset-2"
+             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(145deg,#3f86cb,#1e5da1)] text-white shadow-[0_4px_10px_rgba(47,112,183,.22)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_15px_rgba(47,112,183,.3)] disabled:cursor-not-allowed disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4c84bd] focus-visible:ring-offset-2"
           >
             <ArrowUp size={17} strokeWidth={2.5} />
           </button>
