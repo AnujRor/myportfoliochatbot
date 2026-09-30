@@ -1,0 +1,23 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "anuj-ai-assistant": {
+      "root": "artifacts/anuj-ai-assistant",
+      "framework": "vite",
+      "buildCommand": "pnpm run build",
+      "outputDirectory": "dist/public",
+      "rewrites": [
+        { "source": "/(.*)", "destination": "/index.html" }
+      ]
+    },
+    "api-server": {
+      "root": "artifacts/api-server",
+      "framework": "express",
+      "entrypoint": "src/app.ts"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": { "service": "api-server" } },
+    { "source": "/(.*)", "destination": { "service": "anuj-ai-assistant" } }
+  ]
+}
