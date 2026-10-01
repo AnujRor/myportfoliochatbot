@@ -52,6 +52,23 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, 'dist/public'),
     emptyOutDir: true,
+    rollupOptions: {
+      onLog(level, log) {
+        if (
+          log.code === 'MODULE_LEVEL_DIRECTIVE' ||
+          log.code === 'SOURCEMAP_ERROR'
+        ) {
+          return;
+        }
+        if (level === 'error') {
+          console.error(log);
+        } else if (level === 'warn') {
+          console.warn(log.message);
+        } else {
+          console.log(log.message);
+        }
+      },
+    },
   },
   server: {
     port,
