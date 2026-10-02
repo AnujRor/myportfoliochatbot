@@ -16,7 +16,7 @@ if (Number.isNaN(port) || port <= 0) {
 
 // Use relative paths for Vercel (production), BASE_PATH for Replit
 const isProduction = process.env.NODE_ENV === 'production';
-const basePath = isProduction ? './' : (process.env.BASE_PATH ?? '/');
+const basePath = isProduction ? '/' : (process.env.BASE_PATH ?? '/');
 
 export default defineConfig({
   base: basePath,
