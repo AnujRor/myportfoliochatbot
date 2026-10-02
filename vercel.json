@@ -1,18 +1,21 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "anuj-ai-assistant": {
-      "root": "artifacts/anuj-ai-assistant",
-      "framework": "vite",
-      "buildCommand": "pnpm run build",
-      "outputDirectory": "dist/public",
-      "rewrites": [
-        { "source": "/api/(.*)", "destination": "/api/$1" },
-        { "source": "/(.*)", "destination": "/index.html" }
-      ]
+  "version": 2,
+  "buildCommand": "pnpm --filter @workspace/anuj-ai-assistant run build",
+  "outputDirectory": "artifacts/anuj-ai-assistant/dist/public",
+  "cleanUrls": true,
+  "functions": {
+    "artifacts/anuj-ai-assistant/api/chat.js": {
+      "maxDuration": 30
     }
   },
   "rewrites": [
-    { "source": "/(.*)", "destination": { "service": "anuj-ai-assistant" } }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
