@@ -122,7 +122,7 @@ function Home() {
   });
   const [draft, setDraft] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -138,7 +138,7 @@ function Home() {
     const nextMessages = [...history, userMessage];
     setMessages(nextMessages);
     setDraft('');
-    setError(false);
+    setError(null);
     setIsLoading(true);
     try {
       const response = await fetch('/api/chat', {
@@ -146,12 +146,26 @@ function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: nextMessages.map(({ role, content: text }) => ({ role, content: text })) }),
       });
-      if (!response.ok) throw new Error('Request failed');
-      const data = await response.json() as { reply?: string };
-      if (!data.reply) throw new Error('Empty reply');
+      const data = await response.json().catch(() => null) as { reply?: unknown; error?: unknown } | null;
+      if (!response.ok) {
+        throw new Error(
+          typeof data?.error === 'string'
+            ? data.error
+            : 'The chat service is temporarily unavailable. Please try again.',
+        );
+      }
+      if (typeof data?.reply !== 'string' || !data.reply.trim()) {
+        throw new Error('The chat service returned an empty reply. Please try again.');
+      }
       setMessages(current => [...current, createMessage('assistant', data.reply as string)]);
-    } catch {
-      setError(true);
+    } catch (cause) {
+      setError(
+        cause instanceof TypeError
+          ? 'Could not connect to the chat service. Check your internet connection and try again.'
+          : cause instanceof Error
+            ? cause.message
+            : 'The chat service is temporarily unavailable. Please try again.',
+      );
     } finally {
       setIsLoading(false);
     }
@@ -163,7 +177,7 @@ function Home() {
       const lastIndex = messages.findIndex(message => message.id === lastUser.id);
       const historyWithoutFailedMessage = messages.slice(0, lastIndex);
       setMessages(historyWithoutFailedMessage);
-      setError(false);
+      setError(null);
       void sendMessage(lastUser.content, historyWithoutFailedMessage);
     }
   };
@@ -176,7 +190,7 @@ function Home() {
   const newChat = () => {
     setMessages(initialMessages());
     setDraft('');
-    setError(false);
+    setError(null);
     setIsLoading(false);
     inputRef.current?.focus();
   };
@@ -236,7 +250,7 @@ function Home() {
           {error && (
             <div className="ml-11 flex items-center gap-2 rounded-xl border border-[#e8b8ad] bg-[#fff4f0] px-3 py-2.5 text-[12px] text-[#9e4d40]" role="alert" data-testid="status-error">
               <CircleAlert size={15} />
-               <span className="flex-1">Something went wrong. Please try again.</span>
+              <span className="flex-1">{error}</span>
               <button type="button" onClick={retry} className="inline-flex items-center gap-1 font-semibold underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b96d5d]" data-testid="button-retry">
                 <RotateCcw size={13} /> Retry
               </button>

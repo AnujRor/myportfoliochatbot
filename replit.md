@@ -31,7 +31,7 @@ A single-screen AI chat assistant that helps visitors learn about Anuj Ror, his 
 
 ## Architecture decisions
 
-- The browser only calls `/api/chat`; the shared API server owns that path in Replit, while the app-local handler keeps the same contract for Vercel.
+- The browser only calls `/api/chat`; Replit routes it to the shared API server, while Vercel rewrites it to the verified public Replit API deployment because its static service does not publish the nested function.
 - Chat history is intentionally local-only; no visitor messages are persisted server-side.
 - Groq is requested with streaming enabled and the specified model first; if the key cannot access that model, the server retries with an accessible fallback model.
 

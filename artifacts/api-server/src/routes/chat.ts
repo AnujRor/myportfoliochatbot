@@ -163,7 +163,10 @@ router.post("/chat", async (req, res) => {
 
   if (!process.env.GROQ_API_KEY) {
     logger.error("GROQ_API_KEY is not configured");
-    res.status(500).json({ error: "AI service is not configured" });
+    res.status(503).json({
+      error: "AI chat is temporarily unavailable. Please try again later.",
+      code: "AI_NOT_CONFIGURED",
+    });
     return;
   }
 
@@ -175,6 +178,7 @@ router.post("/chat", async (req, res) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
         },
+        signal: AbortSignal.timeout(45_000),
         body: JSON.stringify({
           model,
           messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
@@ -184,7 +188,46 @@ router.post("/chat", async (req, res) => {
         }),
       });
 
-    let groqResponse = await requestModel(MODEL);
+    const requestModelWithRetry = async (model: string): Promise<Response> => {
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        let response: Response;
+        try {
+          response = await requestModel(model);
+        } catch (error) {
+          if (attempt === 1) throw error;
+          logger.warn({ model, attempt: attempt + 1 }, "Transient Groq connection error; retrying once");
+          await new Promise((resolve) => setTimeout(resolve, 600));
+          continue;
+        }
+
+        const retryable =
+          response.status === 408 ||
+          response.status === 425 ||
+          response.status === 429 ||
+          response.status >= 500;
+        if (!retryable || attempt === 1) return response;
+
+        const retryAfter = Number(response.headers.get("retry-after"));
+        const delayMs =
+          Number.isFinite(retryAfter) && retryAfter > 0
+            ? Math.min(retryAfter * 1000, 1500)
+            : 600;
+        try {
+          await response.body?.cancel();
+        } catch {
+          // Continue the retry even if the provider response stream cannot be cancelled.
+        }
+        logger.warn(
+          { model, status: response.status, attempt: attempt + 1, delayMs },
+          "Transient Groq response; retrying once",
+        );
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+
+      throw new Error("Groq request retry ended unexpectedly");
+    };
+
+    let groqResponse = await requestModelWithRetry(MODEL);
 
     if (!groqResponse.ok) {
       const errorText = await groqResponse.text();
@@ -193,10 +236,16 @@ router.post("/chat", async (req, res) => {
 
       if (modelUnavailable) {
         logger.warn({ model: MODEL, fallbackModel: FALLBACK_MODEL }, "Preferred Groq model unavailable; using fallback");
-        groqResponse = await requestModel(FALLBACK_MODEL);
+        groqResponse = await requestModelWithRetry(FALLBACK_MODEL);
       } else {
         logger.error({ status: groqResponse.status, errorText }, "Groq request failed");
-        res.status(502).json({ error: "Groq request failed" });
+        const busy = groqResponse.status === 429;
+        res.status(busy ? 503 : 502).json({
+          error: busy
+            ? "AI chat is busy right now. Please wait a moment and try again."
+            : "The chat service could not connect right now. Please try again shortly.",
+          code: busy ? "AI_BUSY" : "AI_UNAVAILABLE",
+        });
         return;
       }
     }
@@ -204,21 +253,33 @@ router.post("/chat", async (req, res) => {
     if (!groqResponse.ok) {
       const errorText = await groqResponse.text();
       logger.error({ status: groqResponse.status, errorText }, "Groq fallback request failed");
-      res.status(502).json({ error: "Groq request failed" });
+      const busy = groqResponse.status === 429;
+      res.status(busy ? 503 : 502).json({
+        error: busy
+          ? "AI chat is busy right now. Please wait a moment and try again."
+          : "The chat service could not connect right now. Please try again shortly.",
+        code: busy ? "AI_BUSY" : "AI_UNAVAILABLE",
+      });
       return;
     }
 
     const reply = await readStream(groqResponse);
     if (!reply) {
       logger.error("Groq response contained no assistant text");
-      res.status(502).json({ error: "Groq returned no assistant text" });
+      res.status(502).json({
+        error: "The chat service returned an empty reply. Please try again.",
+        code: "AI_EMPTY_REPLY",
+      });
       return;
     }
 
     res.status(200).json({ reply });
   } catch (error) {
     logger.error({ err: error }, "Groq request error");
-    res.status(500).json({ error: "Unable to reach the AI service" });
+    res.status(503).json({
+      error: "Could not reach the chat service. Please check your connection and try again.",
+      code: "AI_CONNECTION_ERROR",
+    });
   }
 });
 
