@@ -5,7 +5,7 @@
       "root": "artifacts/anuj-ai-assistant",
       "framework": "vite",
       "buildCommand": "pnpm run build",
-      "outputDirectory": "public",
+      "outputDirectory": "dist/public",
       "rewrites": [
         { "source": "/api/(.*)", "destination": "/api/$1" },
         { "source": "/(.*)", "destination": "/index.html" }
