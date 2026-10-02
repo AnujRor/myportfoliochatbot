@@ -14,7 +14,9 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-const basePath = process.env.BASE_PATH ?? '/';
+// Use relative paths for Vercel (production), BASE_PATH for Replit
+const isProduction = process.env.NODE_ENV === 'production';
+const basePath = isProduction ? './' : (process.env.BASE_PATH ?? '/');
 
 export default defineConfig({
   base: basePath,
