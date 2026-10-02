@@ -13,10 +13,6 @@
     }
   },
   "rewrites": [
-    {
-      "source": "/api/chat",
-      "destination": "https://anuj-ai-assistant--roanuj.replit.app/api/chat"
-    },
     { "source": "/(.*)", "destination": { "service": "anuj-ai-assistant" } }
   ]
 }
